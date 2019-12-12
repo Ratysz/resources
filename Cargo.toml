@@ -5,6 +5,13 @@ description = "Safe store for one value of each type, with interior mutability."
 authors = ["Alexander Sepity <alexander.sepity@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/Ratysz/resources"
+readme = "README.md"
+keywords = ["resources", "resource", "mutability", "map", "container", "ecs"]
+categories = ["data-structures", "concurrency", "game-engines"]
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 downcast-rs = "1.1.1"
