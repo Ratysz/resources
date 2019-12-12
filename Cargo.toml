@@ -7,7 +7,7 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Ratysz/resources"
 readme = "README.md"
-keywords = ["resources", "resource", "mutability", "map", "container", "ecs"]
+keywords = ["resources", "resource", "mutability", "container", "ecs"]
 categories = ["data-structures", "concurrency", "game-engines"]
 
 [badges]
