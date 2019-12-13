@@ -43,7 +43,9 @@ fn downcast_resource<T: Resource>(resource: Box<dyn Resource>) -> T {
 }
 
 impl Resources {
-    /// Creates an empty container. Functionally identical to [`::default()`](#method.default).
+    /// Creates an empty container. Functionally identical to [`default`].
+    ///
+    /// [`default`]: #method.default
     pub fn new() -> Self {
         Self::default()
     }

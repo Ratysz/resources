@@ -9,6 +9,10 @@ type Lock = RwLock<ResourcesRwLock, Box<dyn Resource>>;
 type MappedReadGuard<'a, T> = MappedRwLockReadGuard<'a, ResourcesRwLock, T>;
 type MappedWriteGuard<'a, T> = MappedRwLockWriteGuard<'a, ResourcesRwLock, T>;
 
+/// Immutable borrow of a [`Resource`] stored in a [`Resources`] container.
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
 pub struct Ref<'a, T: Resource> {
     read_guard: MappedReadGuard<'a, T>,
 }
@@ -35,6 +39,10 @@ impl<'a, T: Resource> Deref for Ref<'a, T> {
     }
 }
 
+/// Mutable borrow of a [`Resource`] stored in a [`Resources`] container.
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
 pub struct RefMut<'a, T: Resource> {
     write_guard: MappedWriteGuard<'a, T>,
 }
