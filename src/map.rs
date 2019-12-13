@@ -20,9 +20,8 @@ impl_downcast!(Resource);
 /// A [`Resource`] container, for storing at most one resource of each specific type.
 ///
 /// Internally, this is a [`FxHashMap`] of [`TypeId`] to [`RwLock`].
-///
-/// The lock is used in a non-blocking way;
-/// in fact, it's underlying implementation will panic instead of blocking.
+/// The lock is used in a non-blocking way: attempting to access a resource in an invalid way will
+/// return the appropriate error instead.
 ///
 /// [`Resource`]: trait.Resource.html
 /// [`FxHashMap`]: ../fxhash/type.FxHashMap.html
