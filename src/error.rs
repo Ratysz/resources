@@ -4,6 +4,10 @@ use std::{
 };
 
 #[derive(Debug, Clone, Eq, PartialEq)]
+/// Error indicating that no [`Resource`] of requested type is present in a [`Resources`] container.
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
 pub struct NoSuchResource;
 
 impl Display for NoSuchResource {
@@ -15,8 +19,17 @@ impl Display for NoSuchResource {
 impl Error for NoSuchResource {}
 
 #[derive(Debug, Clone, Eq, PartialEq)]
+/// Error indicating that accessing the requested [`Resource`] in a [`Resources`] container
+/// via [`get`] or [`get_mut`] methods would violate borrow rules.
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
+/// [`get`]: struct.Resources.html#method.get
+/// [`get_mut`]: struct.Resources.html#method.get_mut
 pub enum InvalidBorrow {
+    /// Can't access mutably because the resource is accessed either immutably or mutably elsewhere.
     Mutable,
+    /// Can't access immutably because the resource is accessed mutably elsewhere.
     Immutable,
 }
 
@@ -32,8 +45,17 @@ impl Display for InvalidBorrow {
 impl Error for InvalidBorrow {}
 
 #[derive(Debug, Clone, Eq, PartialEq)]
+/// Errors that may occur when accessing a [`Resource`] in a [`Resources`] container
+/// via [`get`] or [`get_mut`] methods.
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
+/// [`get`]: struct.Resources.html#method.get
+/// [`get_mut`]: struct.Resources.html#method.get_mut
 pub enum CantGetResource {
+    /// Accessing the resource would violate borrow rules.
     InvalidBorrow(InvalidBorrow),
+    /// No resource of this type is present in the container.
     NoSuchResource(NoSuchResource),
 }
 
