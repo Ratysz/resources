@@ -19,14 +19,15 @@ impl_downcast!(Resource);
 
 /// A [`Resource`] container, for storing at most one resource of each specific type.
 ///
-/// Internally, this is a [`FxHashMap`] of [`TypeId`] to [`RwLock`].
-/// The lock is used in a non-blocking way: attempting to access a resource in an invalid way will
-/// return the appropriate error instead.
+/// Internally, this is a [`FxHashMap`] of [`TypeId`] to [`RwLock`]. None of the methods are
+/// blocking, however: accessing a resource in a way that would break borrow rules will
+/// return the [`InvalidBorrow`] error instead.
 ///
 /// [`Resource`]: trait.Resource.html
 /// [`FxHashMap`]: ../fxhash/type.FxHashMap.html
 /// [`TypeId`]: https://doc.rust-lang.org/std/any/struct.TypeId.html
-/// [`RwLock`]: ../lock_api/struct.RwLock.html
+/// [`RwLock`]: ../parking_lot/type.RwLock.html
+/// [`InvalidBorrow`]: enum.InvalidBorrow.html
 #[derive(Default)]
 pub struct Resources {
     resources: FxHashMap<TypeId, RwLock<Box<dyn Resource>>>,
