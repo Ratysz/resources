@@ -22,7 +22,10 @@ impl_downcast!(Resource);
 
 /// A [`Resource`] container, for storing at most one resource of each specific type.
 ///
-/// Internally, this is a [`FxHashMap`] of [`TypeId`] to [`RwLock`]. The lock is used in a non-blocking way; in fact, it's underlying implementation would panic instead of blocking.
+/// Internally, this is a [`FxHashMap`] of [`TypeId`] to [`RwLock`].
+///
+/// The lock is used in a non-blocking way;
+/// in fact, it's underlying implementation will panic instead of blocking.
 ///
 /// [`Resource`]: trait.Resource.html
 /// [`FxHashMap`]: ../fxhash/type.FxHashMap.html
@@ -50,14 +53,19 @@ impl Resources {
         self.resources.contains_key(&TypeId::of::<T>())
     }
 
-    /// Inserts the given resource of type `T` into the container. If a resource of this type was already present, it will be updated, and the original returned.
+    /// Inserts the given resource of type `T` into the container.
+    ///
+    /// If a resource of this type was already present,
+    /// it will be updated, and the original returned.
     pub fn insert<T: Resource>(&mut self, resource: T) -> Option<T> {
         self.resources
             .insert(TypeId::of::<T>(), RwLock::new(Box::new(resource)))
             .map(|resource| downcast_resource(resource.into_inner()))
     }
 
-    /// Removes the resource of type `T` from the container. If a resource of this type was present in the container, it will be returned.
+    /// Removes the resource of type `T` from the container.
+    ///
+    /// If a resource of this type was present in the container, it will be returned.
     pub fn remove<T: Resource>(&mut self) -> Option<T> {
         self.resources
             .remove(&TypeId::of::<T>())
@@ -72,7 +80,10 @@ impl Resources {
         }
     }
 
-    /// Returns a reference to the stored resource of type `T`. If such a resource is currently accessed mutably elsewhere, or is not present in the container, returns the appropriate error.
+    /// Returns a reference to the stored resource of type `T`.
+    ///
+    /// If such a resource is currently accessed mutably elsewhere,
+    /// or is not present in the container, returns the appropriate error.
     pub fn get<T: Resource>(&self) -> Result<Ref<T>, CantGetResource> {
         self.resources
             .get(&TypeId::of::<T>())
@@ -80,7 +91,10 @@ impl Resources {
             .and_then(|lock| Ref::from_lock(lock).map_err(|error| error.into()))
     }
 
-    /// Returns a mutable reference to the stored resource of type `T`. If such a resource is currently accessed immutably or mutably elsewhere, or is not present in the container, returns the appropriate error.
+    /// Returns a mutable reference to the stored resource of type `T`.
+    ///
+    /// If such a resource is currently accessed immutably or mutably elsewhere,
+    /// or is not present in the container, returns the appropriate error.
     pub fn get_mut<T: Resource>(&self) -> Result<RefMut<T>, CantGetResource> {
         self.resources
             .get(&TypeId::of::<T>())
