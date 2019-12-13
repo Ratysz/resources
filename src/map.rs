@@ -103,16 +103,28 @@ impl Resources {
     }
 }
 
+/// A view into a specific [`Resource`]'s entry in a [`Resources`] container,
+/// which may either be vacant or occupied.
+///
+/// This is returned by the [`entry`] method on [`Resources`].
+///
+/// [`Resource`]: trait.Resource.html
+/// [`Resources`]: struct.Resources.html
+/// [`entry`]: struct.Resources.html#method.entry
 pub struct Entry<'a, T: Resource> {
     base: base::Entry<'a, TypeId, RwLock<ResourcesRwLock, Box<dyn Resource>>>,
     phantom_data: PhantomData<T>,
 }
 
 impl<'a, T: Resource> Entry<'a, T> {
+    /// Ensures a resource is in the entry by inserting the given value if empty,
+    /// and returns a mutable reference to the contained resource.
     pub fn or_insert(self, default: T) -> RefMut<'a, T> {
         self.or_insert_with(|| default)
     }
 
+    /// Ensures a resource is in the entry by inserting the result of given function if empty,
+    /// and returns a mutable reference to the contained resource.
     pub fn or_insert_with(self, default: impl FnOnce() -> T) -> RefMut<'a, T> {
         use base::Entry::*;
         RefMut::from_lock(match self.base {
@@ -122,6 +134,7 @@ impl<'a, T: Resource> Entry<'a, T> {
         .expect("borrowing should always succeed here")
     }
 
+    /// Provides in-place mutable access to an occupied entry before any potential inserts.
     pub fn and_modify(self, f: impl FnOnce(&mut T)) -> Self {
         use base::Entry::*;
         match self.base {
@@ -143,6 +156,8 @@ impl<'a, T: Resource> Entry<'a, T> {
 }
 
 impl<'a, T: Resource + Default> Entry<'a, T> {
+    /// Ensures a resource is in the entry by inserting it's default value if empty,
+    /// and returns a mutable reference to the contained resource.
     pub fn or_default(self) -> RefMut<'a, T> {
         self.or_insert_with(T::default)
     }
