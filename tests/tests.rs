@@ -104,7 +104,7 @@ fn remove() {
     resources.get_mut::<One>().unwrap().0 = 1;
 
     assert_eq!(resources.remove::<One>().unwrap(), One(1));
-    assert!(resources.remove::<One>().is_err());
+    assert!(resources.remove::<One>().is_none());
 }
 
 #[test]
