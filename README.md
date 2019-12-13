@@ -33,7 +33,7 @@ fn main() {
 
     {
         let mut some_number = resources.get_mut::<SomeNumber>().unwrap();
-        let mut some_string = resources.get_mut::<SomeNumber>().unwrap();
+        let mut some_string = resources.get_mut::<SomeString>().unwrap();
 
         // Immutably borrowing a resource that's already borrowed mutably is not allowed.
         assert!(resources.get::<SomeNumber>().is_err());
@@ -43,7 +43,7 @@ fn main() {
     }
 
     // The mutable borrows now went out of scope, so it's okay to borrow again however needed.
-    assert_eq!(resources.get::<SomeNumber>().0, 2);
+    assert_eq!(resources.get::<SomeNumber>().unwrap().0, 2);
 
     // Multiple immutable borrows are okay.
     let some_string1 = resources.get::<SomeString>().unwrap();
