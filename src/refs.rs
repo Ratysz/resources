@@ -1,24 +1,20 @@
-use lock_api::{
+use parking_lot::{
     MappedRwLockReadGuard, MappedRwLockWriteGuard, RwLock, RwLockReadGuard, RwLockWriteGuard,
 };
 use std::ops::{Deref, DerefMut};
 
-use crate::{lock::ResourcesRwLock, InvalidBorrow, Resource};
-
-type Lock = RwLock<ResourcesRwLock, Box<dyn Resource>>;
-type MappedReadGuard<'a, T> = MappedRwLockReadGuard<'a, ResourcesRwLock, T>;
-type MappedWriteGuard<'a, T> = MappedRwLockWriteGuard<'a, ResourcesRwLock, T>;
+use crate::{InvalidBorrow, Resource};
 
 /// Immutable borrow of a [`Resource`] stored in a [`Resources`] container.
 ///
 /// [`Resource`]: trait.Resource.html
 /// [`Resources`]: struct.Resources.html
 pub struct Ref<'a, T: Resource> {
-    read_guard: MappedReadGuard<'a, T>,
+    read_guard: MappedRwLockReadGuard<'a, T>,
 }
 
 impl<'a, T: Resource> Ref<'a, T> {
-    pub(crate) fn from_lock(lock: &'a Lock) -> Result<Self, InvalidBorrow> {
+    pub(crate) fn from_lock(lock: &'a RwLock<Box<dyn Resource>>) -> Result<Self, InvalidBorrow> {
         lock.try_read()
             .map(|guard| Self {
                 read_guard: RwLockReadGuard::map(guard, |resource| {
@@ -44,11 +40,11 @@ impl<'a, T: Resource> Deref for Ref<'a, T> {
 /// [`Resource`]: trait.Resource.html
 /// [`Resources`]: struct.Resources.html
 pub struct RefMut<'a, T: Resource> {
-    write_guard: MappedWriteGuard<'a, T>,
+    write_guard: MappedRwLockWriteGuard<'a, T>,
 }
 
 impl<'a, T: Resource> RefMut<'a, T> {
-    pub(crate) fn from_lock(lock: &'a Lock) -> Result<Self, InvalidBorrow> {
+    pub(crate) fn from_lock(lock: &'a RwLock<Box<dyn Resource>>) -> Result<Self, InvalidBorrow> {
         lock.try_write()
             .map(|guard| Self {
                 write_guard: RwLockWriteGuard::map(guard, |resource| {

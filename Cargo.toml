@@ -16,4 +16,4 @@ maintenance = { status = "actively-developed" }
 [dependencies]
 downcast-rs = "1.1.1"
 fxhash = "0.2.1"
-lock_api = "0.3.2"
+parking_lot = "0.10.0"

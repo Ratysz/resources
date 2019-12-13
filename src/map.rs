@@ -1,15 +1,12 @@
 use downcast_rs::{impl_downcast, Downcast};
 use fxhash::FxHashMap;
-use lock_api::RwLock;
+use parking_lot::RwLock;
 use std::{any::TypeId, collections::hash_map as base, marker::PhantomData, ops::DerefMut};
 
 use crate::{
     error::{CantGetResource, NoSuchResource},
-    lock::ResourcesRwLock,
     refs::{Ref, RefMut},
 };
-
-type Lock = RwLock<ResourcesRwLock, Box<dyn Resource>>;
 
 /// Types that can be stored in [`Resources`], automatically implemented for all applicable.
 ///
@@ -33,7 +30,7 @@ impl_downcast!(Resource);
 /// [`RwLock`]: ../lock_api/struct.RwLock.html
 #[derive(Default)]
 pub struct Resources {
-    resources: FxHashMap<TypeId, Lock>,
+    resources: FxHashMap<TypeId, RwLock<Box<dyn Resource>>>,
 }
 
 fn downcast_resource<T: Resource>(resource: Box<dyn Resource>) -> T {
@@ -114,7 +111,7 @@ impl Resources {
 /// [`Resources`]: struct.Resources.html
 /// [`entry`]: struct.Resources.html#method.entry
 pub struct Entry<'a, T: Resource> {
-    base: base::Entry<'a, TypeId, RwLock<ResourcesRwLock, Box<dyn Resource>>>,
+    base: base::Entry<'a, TypeId, RwLock<Box<dyn Resource>>>,
     phantom_data: PhantomData<T>,
 }
 

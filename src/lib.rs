@@ -56,7 +56,6 @@
 #![warn(missing_docs)]
 
 mod error;
-mod lock;
 mod map;
 mod refs;
 
