@@ -51,7 +51,7 @@
 //! [Dependencies]: https://deps.rs/repo/github/Ratysz/resources/status.svg
 //! [deps.rs]: https://deps.rs/repo/github/Ratysz/resources
 //! [License]: https://img.shields.io/crates/l/resources.svg
-//! [license link]: https://github.com/Ratysz/resources/LICENSE.md
+//! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
 
 #![warn(missing_docs)]
 
