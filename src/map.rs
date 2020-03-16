@@ -40,7 +40,7 @@ fn downcast_resource<T: Resource>(resource: Box<dyn Resource>) -> T {
 }
 
 impl Resources {
-    /// Creates an empty container. Functionally identical to [`default`].
+    /// Creates an empty container. Functionally identical to [`::default()`].
     ///
     /// [`default`]: #method.default
     pub fn new() -> Self {
@@ -73,9 +73,15 @@ impl Resources {
 
     /// Gets the type `T`'s corresponding entry for in-place manipulation.
     pub fn entry<T: Resource>(&mut self) -> Entry<T> {
-        Entry {
-            base: self.resources.entry(TypeId::of::<T>()),
-            phantom_data: PhantomData,
+        match self.resources.entry(TypeId::of::<T>()) {
+            base::Entry::Occupied(base) => Entry::Occupied(OccupiedEntry {
+                base,
+                phantom_data: PhantomData,
+            }),
+            base::Entry::Vacant(base) => Entry::Vacant(VacantEntry {
+                base,
+                phantom_data: PhantomData,
+            }),
         }
     }
 
@@ -110,8 +116,18 @@ impl Resources {
 /// [`Resource`]: trait.Resource.html
 /// [`Resources`]: struct.Resources.html
 /// [`entry`]: struct.Resources.html#method.entry
-pub struct Entry<'a, T: Resource> {
-    base: base::Entry<'a, TypeId, RwLock<Box<dyn Resource>>>,
+pub enum Entry<'a, T: Resource> {
+    Occupied(OccupiedEntry<'a, T>),
+    Vacant(VacantEntry<'a, T>),
+}
+
+pub struct OccupiedEntry<'a, T: Resource> {
+    base: base::OccupiedEntry<'a, TypeId, RwLock<Box<dyn Resource>>>,
+    phantom_data: PhantomData<T>,
+}
+
+pub struct VacantEntry<'a, T: Resource> {
+    base: base::VacantEntry<'a, TypeId, RwLock<Box<dyn Resource>>>,
     phantom_data: PhantomData<T>,
 }
 
@@ -125,32 +141,19 @@ impl<'a, T: Resource> Entry<'a, T> {
     /// Ensures a resource is in the entry by inserting the result of given function if empty,
     /// and returns a mutable reference to the contained resource.
     pub fn or_insert_with(self, default: impl FnOnce() -> T) -> RefMut<'a, T> {
-        use base::Entry::*;
-        RefMut::from_lock(match self.base {
-            Occupied(entry) => entry.into_mut(),
-            Vacant(entry) => entry.insert(RwLock::new(Box::new(default()))),
-        })
-        .expect("borrowing should always succeed here")
+        use Entry::*;
+        match self {
+            Occupied(occupied) => occupied.into_mut(),
+            Vacant(vacant) => vacant.insert(default()),
+        }
     }
 
     /// Provides in-place mutable access to an occupied entry before any potential inserts.
-    pub fn and_modify(self, f: impl FnOnce(&mut T)) -> Self {
-        use base::Entry::*;
-        match self.base {
-            Occupied(entry) => {
-                f(RefMut::<'_, T>::from_lock(entry.get())
-                    .expect("borrowing should always succeed here")
-                    .deref_mut());
-                Self {
-                    base: Occupied(entry),
-                    phantom_data: PhantomData,
-                }
-            }
-            Vacant(entry) => Self {
-                base: Vacant(entry),
-                phantom_data: PhantomData,
-            },
+    pub fn and_modify(mut self, f: impl FnOnce(&mut T)) -> Self {
+        if let Entry::Occupied(occupied) = &mut self {
+            f(occupied.get_mut().deref_mut());
         }
+        self
     }
 }
 
@@ -159,5 +162,44 @@ impl<'a, T: Resource + Default> Entry<'a, T> {
     /// and returns a mutable reference to the contained resource.
     pub fn or_default(self) -> RefMut<'a, T> {
         self.or_insert_with(T::default)
+    }
+}
+
+impl<'a, T: Resource> OccupiedEntry<'a, T> {
+    pub fn get(&self) -> Ref<T> {
+        Ref::from_lock(self.base.get()).expect("entry API assumes unique access")
+    }
+
+    pub fn get_mut(&mut self) -> RefMut<T> {
+        RefMut::from_lock(self.base.get_mut()).expect("entry API assumes unique access")
+    }
+
+    pub fn into_mut(self) -> RefMut<'a, T> {
+        RefMut::from_lock(self.base.into_mut()).expect("entry API assumes unique access")
+    }
+
+    pub fn insert(&mut self, value: T) -> T {
+        *self
+            .base
+            .insert(RwLock::new(Box::new(value)))
+            .into_inner()
+            .downcast()
+            .unwrap_or_else(|_| panic!("downcasting resources should always succeed"))
+    }
+
+    pub fn remove(self) -> T {
+        *self
+            .base
+            .remove()
+            .into_inner()
+            .downcast()
+            .unwrap_or_else(|_| panic!("downcasting resources should always succeed"))
+    }
+}
+
+impl<'a, T: Resource> VacantEntry<'a, T> {
+    pub fn insert(self, value: T) -> RefMut<'a, T> {
+        RefMut::from_lock(self.base.insert(RwLock::new(Box::new(value))))
+            .expect("entry API assumes unique access")
     }
 }

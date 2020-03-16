@@ -1,5 +1,8 @@
 # `resources`
-[![Latest Version]][crates.io] [![Documentation]][docs.rs] [![Dependencies]][deps.rs] [![License]](LICENSE.md)
+[![Latest Version]][crates.io]
+[![Documentation]][docs.rs]
+[![Dependencies]][deps.rs]
+[![License]](LICENSE.md)
 
 [Latest Version]: https://img.shields.io/crates/v/resources.svg
 [crates.io]: https://crates.io/crates/resources

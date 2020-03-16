@@ -1,4 +1,17 @@
-//! [![Latest Version]][crates.io] [![Documentation]][docs.rs] [![Dependencies]][deps.rs] [![License]][license link]
+//! [![Latest Version]][crates.io]
+//! [![Documentation]][docs.rs]
+//! [![Dependencies]][deps.rs]
+//! [![License]][license link]
+//!
+//! [`Resources`]: struct.Resources.html
+//! [Latest Version]: https://img.shields.io/crates/v/resources.svg
+//! [crates.io]: https://crates.io/crates/resources
+//! [Documentation]: https://docs.rs/resources/badge.svg
+//! [docs.rs]: https://docs.rs/resources
+//! [Dependencies]: https://deps.rs/repo/github/Ratysz/resources/status.svg
+//! [deps.rs]: https://deps.rs/repo/github/Ratysz/resources
+//! [License]: https://img.shields.io/crates/l/resources.svg
+//! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
 //!
 //! This crate provides the [`Resources`] struct:
 //! a container that stores at most one value of each specific type,
@@ -42,16 +55,6 @@
 //!    assert_eq!(some_string1.0, some_string2.0);
 //!}
 //!```
-//!
-//! [`Resources`]: struct.Resources.html
-//! [Latest Version]: https://img.shields.io/crates/v/resources.svg
-//! [crates.io]: https://crates.io/crates/resources
-//! [Documentation]: https://docs.rs/resources/badge.svg
-//! [docs.rs]: https://docs.rs/resources
-//! [Dependencies]: https://deps.rs/repo/github/Ratysz/resources/status.svg
-//! [deps.rs]: https://deps.rs/repo/github/Ratysz/resources
-//! [License]: https://img.shields.io/crates/l/resources.svg
-//! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
 
 #![warn(missing_docs)]
 

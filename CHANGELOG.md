@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--## [Unreleased](https://github.com/Ratysz/resources/compare/0.2.1..HEAD)-->
 
+## [Unreleased](https://github.com/Ratysz/resources/compare/0.2.1..HEAD)
+### Changed
+- Overhauled entry API, now mirrors that of `std::collections::HashMap`.
+### Added
+- `OccupiedEntry` and `VacantEntry` structs as per the entry API changes.
+
 ## [0.2.1](https://github.com/Ratysz/resources/compare/0.2.0..0.2.1) - 2019-12-13
 ### Changed
 - Removed `RwLock` reinvention in favor of implementations provided by `parking_lot`.
