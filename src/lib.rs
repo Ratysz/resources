@@ -63,5 +63,5 @@ mod map;
 mod refs;
 
 pub use error::{CantGetResource, InvalidBorrow, NoSuchResource};
-pub use map::{Entry, Resource, Resources};
+pub use map::{Entry, OccupiedEntry, Resource, Resources, VacantEntry};
 pub use refs::{Ref, RefMut};

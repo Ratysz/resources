@@ -108,24 +108,31 @@ impl Resources {
     }
 }
 
-/// A view into a specific [`Resource`]'s entry in a [`Resources`] container,
-/// which may either be vacant or occupied.
-///
+/// A view into an entry in a [`Resources`] container, which may either be vacant or occupied.
 /// This is returned by the [`entry`] method on [`Resources`].
 ///
-/// [`Resource`]: trait.Resource.html
 /// [`Resources`]: struct.Resources.html
 /// [`entry`]: struct.Resources.html#method.entry
 pub enum Entry<'a, T: Resource> {
+    /// An occupied entry.
     Occupied(OccupiedEntry<'a, T>),
+    /// A vacant entry.
     Vacant(VacantEntry<'a, T>),
 }
 
+/// A view into an occupied entry in a [`Resources`] container. It is part of the [`Entry`] enum.
+///
+/// [`Resources`]: struct.Resources.html
+/// [`Entry`]: enum.Entry.html
 pub struct OccupiedEntry<'a, T: Resource> {
     base: base::OccupiedEntry<'a, TypeId, RwLock<Box<dyn Resource>>>,
     phantom_data: PhantomData<T>,
 }
 
+/// A view into a vacant entry in a [`Resources`] container. It is part of the [`Entry`] enum.
+///
+/// [`Resources`]: struct.Resources.html
+/// [`Entry`]: enum.Entry.html
 pub struct VacantEntry<'a, T: Resource> {
     base: base::VacantEntry<'a, TypeId, RwLock<Box<dyn Resource>>>,
     phantom_data: PhantomData<T>,
@@ -166,18 +173,25 @@ impl<'a, T: Resource + Default> Entry<'a, T> {
 }
 
 impl<'a, T: Resource> OccupiedEntry<'a, T> {
+    /// Gets a reference to the value in the entry.
     pub fn get(&self) -> Ref<T> {
         Ref::from_lock(self.base.get()).expect("entry API assumes unique access")
     }
 
+    /// Gets a mutable reference to the value in the entry.
     pub fn get_mut(&mut self) -> RefMut<T> {
         RefMut::from_lock(self.base.get_mut()).expect("entry API assumes unique access")
     }
 
+    /// Converts the `OccupiedEntry` into a mutable reference to the value in the entry
+    /// with a lifetime bound to the [`Resources`] struct itself.
+    ///
+    /// [`Resources`]: struct.Resources.html
     pub fn into_mut(self) -> RefMut<'a, T> {
         RefMut::from_lock(self.base.into_mut()).expect("entry API assumes unique access")
     }
 
+    /// Sets the value of the entry, and returns the entry's old value.
     pub fn insert(&mut self, value: T) -> T {
         *self
             .base
@@ -187,6 +201,7 @@ impl<'a, T: Resource> OccupiedEntry<'a, T> {
             .unwrap_or_else(|_| panic!("downcasting resources should always succeed"))
     }
 
+    /// Takes the value out of the entry, and returns it.
     pub fn remove(self) -> T {
         *self
             .base
@@ -198,6 +213,7 @@ impl<'a, T: Resource> OccupiedEntry<'a, T> {
 }
 
 impl<'a, T: Resource> VacantEntry<'a, T> {
+    /// Sets the value of the entry, and returns a mutable reference to it.
     pub fn insert(self, value: T) -> RefMut<'a, T> {
         RefMut::from_lock(self.base.insert(RwLock::new(Box::new(value))))
             .expect("entry API assumes unique access")
