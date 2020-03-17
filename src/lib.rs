@@ -3,7 +3,6 @@
 //! [![Dependencies]][deps.rs]
 //! [![License]][license link]
 //!
-//! [`Resources`]: struct.Resources.html
 //! [Latest Version]: https://img.shields.io/crates/v/resources.svg
 //! [crates.io]: https://crates.io/crates/resources
 //! [Documentation]: https://docs.rs/resources/badge.svg
@@ -13,7 +12,7 @@
 //! [License]: https://img.shields.io/crates/l/resources.svg
 //! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
 //!
-//! This crate provides the [`Resources`] struct:
+//! This crate provides the [`Resources`](struct.Resources.html) struct:
 //! a container that stores at most one value of each specific type,
 //! and allows safely and concurrently accessing any of them with interior mutability,
 //! without violating borrow rules.
