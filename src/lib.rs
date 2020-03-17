@@ -58,10 +58,12 @@
 
 #![warn(missing_docs)]
 
+mod entry;
 mod error;
 mod map;
 mod refs;
 
+pub use entry::{Entry, OccupiedEntry, VacantEntry};
 pub use error::{CantGetResource, InvalidBorrow, NoSuchResource};
-pub use map::{Entry, OccupiedEntry, Resource, Resources, VacantEntry};
+pub use map::{Resource, Resources};
 pub use refs::{Ref, RefMut};
