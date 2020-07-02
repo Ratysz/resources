@@ -2,12 +2,15 @@
 [![Latest Version]][crates.io]
 [![Documentation]][docs.rs]
 [![License]](LICENSE.md)
+[![CI]][CI link]
 
 [Latest Version]: https://img.shields.io/crates/v/resources.svg
 [crates.io]: https://crates.io/crates/resources
 [Documentation]: https://docs.rs/resources/badge.svg
 [docs.rs]: https://docs.rs/resources
 [License]: https://img.shields.io/crates/l/resources.svg
+[CI]: https://github.com/Ratysz/resources/workflows/CI/badge.svg?branch=master
+[CI link]: https://github.com/Ratysz/resources/actions?query=workflow%3ACI
 
 This crate provides the `Resources` struct:
 a container that stores at most one value of each specific type,

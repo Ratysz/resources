@@ -1,6 +1,7 @@
 //! [![Latest Version]][crates.io]
 //! [![Documentation]][docs.rs]
 //! [![License]][license link]
+//! [![CI]][CI link]
 //!
 //! [Latest Version]: https://img.shields.io/crates/v/resources.svg
 //! [crates.io]: https://crates.io/crates/resources
@@ -8,6 +9,8 @@
 //! [docs.rs]: https://docs.rs/resources
 //! [License]: https://img.shields.io/crates/l/resources.svg
 //! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
+//! [CI]: https://github.com/Ratysz/resources/workflows/CI/badge.svg?branch=master
+//! [CI link]: https://github.com/Ratysz/resources/actions?query=workflow%3ACI
 //!
 //! This crate provides the [`Resources`](struct.Resources.html) struct:
 //! a container that stores at most one value of each specific type,

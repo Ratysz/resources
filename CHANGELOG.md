@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `fetch` feature: when enabled, exposes `Resources::fetch()` that allows
 retrieving up to 16 resources with a one-liner.
+- CI badge.
 
 ## [1.0.0](https://github.com/Ratysz/resources/compare/0.2.1..1.0.0) - 2020-03-17
 ### Changed
