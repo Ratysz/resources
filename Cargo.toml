@@ -10,8 +10,15 @@ readme = "README.md"
 keywords = ["resources", "resource", "mutability", "container", "ecs"]
 categories = ["data-structures", "concurrency", "game-engines"]
 
+[package.metadata.docs.rs]
+all-features = true
+
 [badges]
 maintenance = { status = "passively-maintained" }
+
+[features]
+# Exposes `Resources::fetch()` that allows retrieving up to 16 resources with a one-liner.
+fetch = []
 
 [dependencies]
 downcast-rs = "1.1.1"

@@ -1,14 +1,11 @@
 //! [![Latest Version]][crates.io]
 //! [![Documentation]][docs.rs]
-//! [![Dependencies]][deps.rs]
 //! [![License]][license link]
 //!
 //! [Latest Version]: https://img.shields.io/crates/v/resources.svg
 //! [crates.io]: https://crates.io/crates/resources
 //! [Documentation]: https://docs.rs/resources/badge.svg
 //! [docs.rs]: https://docs.rs/resources
-//! [Dependencies]: https://deps.rs/repo/github/Ratysz/resources/status.svg
-//! [deps.rs]: https://deps.rs/repo/github/Ratysz/resources
 //! [License]: https://img.shields.io/crates/l/resources.svg
 //! [license link]: https://github.com/Ratysz/resources/blob/master/LICENSE.md
 //!
@@ -20,6 +17,13 @@
 //! It's intended to be used as an implementation of storage for data that is not
 //! associated with any specific entity in an ECS (entity component system),
 //! but still needs concurrent access by systems.
+//!
+//! # Cargo features
+//!
+//! - `fetch` - when enabled, exposes `Resources::fetch()` that allows
+//! retrieving up to 16 resources with a one-liner.
+//!
+//! # Example
 //!
 //! ```rust
 //!use resources::*;
@@ -59,10 +63,14 @@
 
 mod entry;
 mod error;
+#[cfg(feature = "fetch")]
+mod fetch;
 mod map;
 mod refs;
 
 pub use entry::{Entry, OccupiedEntry, VacantEntry};
 pub use error::{CantGetResource, InvalidBorrow, NoSuchResource};
+#[cfg(feature = "fetch")]
+pub use fetch::CantFetch;
 pub use map::{Resource, Resources};
 pub use refs::{Ref, RefMut};

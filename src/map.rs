@@ -9,6 +9,9 @@ use crate::{
     refs::{Ref, RefMut},
 };
 
+#[cfg(feature = "fetch")]
+use crate::fetch::{CantFetch, Fetch};
+
 /// Types that can be stored in [`Resources`], automatically implemented for all applicable.
 ///
 /// [`Resources`]: struct.Resources.html
@@ -97,5 +100,42 @@ impl Resources {
             .get(&TypeId::of::<T>())
             .ok_or_else(|| NoSuchResource.into())
             .and_then(|lock| RefMut::from_lock(lock).map_err(|error| error.into()))
+    }
+
+    /// Retrieves up to 16 resources of any combination of mutability.
+    ///
+    /// The generic parameter accepts a single one or any tuple (up to 16)
+    /// of immutable or mutable references of types that are to be retrieved.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use resources::Resources;
+    /// let mut resources = Resources::new();
+    /// assert!(resources.insert(0f32).is_none());
+    /// assert!(resources.insert(1u32).is_none());
+    /// assert!(resources.insert(2usize).is_none());
+    /// {
+    ///     let res_f32 = resources.fetch::<&f32>().unwrap();
+    ///     assert_eq!(*res_f32, 0f32);
+    /// }
+    /// {
+    ///     let (mut res_f32, res_u32) = resources.fetch::<(&mut f32, &u32)>().unwrap();
+    ///     assert_eq!(*res_u32, 1u32);
+    ///     *res_f32 += *res_u32 as f32;
+    /// }
+    /// {
+    ///     let (res_f32, res_usize) = resources.fetch::<(&f32, &usize)>().unwrap();
+    ///     assert_eq!(*res_f32, 1f32);
+    ///     assert_eq!(*res_usize, 2usize);
+    ///     assert!(resources.fetch::<&mut f32>().is_err()); // f32 is already borrowed.
+    /// }
+    /// assert!(resources.fetch::<&bool>().is_err());// There is no bool in the container.
+    /// ```
+    #[cfg(feature = "fetch")]
+    pub fn fetch<R>(&self) -> Result<<R as Fetch>::Refs, CantFetch>
+    where
+        for<'a> R: Fetch<'a>,
+    {
+        R::fetch(self)
     }
 }

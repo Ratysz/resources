@@ -1,15 +1,12 @@
 # `resources`
 [![Latest Version]][crates.io]
 [![Documentation]][docs.rs]
-[![Dependencies]][deps.rs]
 [![License]](LICENSE.md)
 
 [Latest Version]: https://img.shields.io/crates/v/resources.svg
 [crates.io]: https://crates.io/crates/resources
 [Documentation]: https://docs.rs/resources/badge.svg
 [docs.rs]: https://docs.rs/resources
-[Dependencies]: https://deps.rs/repo/github/Ratysz/resources/status.svg
-[deps.rs]: https://deps.rs/repo/github/Ratysz/resources
 [License]: https://img.shields.io/crates/l/resources.svg
 
 This crate provides the `Resources` struct:
@@ -20,6 +17,13 @@ without violating borrow rules.
 It's intended to be used as an implementation of storage for data that is not
 associated with any specific entity in an ECS (entity component system),
 but still needs concurrent access by systems.
+
+# Cargo features
+
+- `fetch` - when enabled, exposes `Resources::fetch()` that allows
+retrieving up to 16 resources with a one-liner.
+
+# Example
 
 ```rust
 use resources::*;
